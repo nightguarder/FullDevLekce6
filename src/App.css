@@ -18,6 +18,23 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Custom styling */
+.fileDiv{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.fileInput{
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.result{
+  border: '1px solid #ddd';
+  padding: '5px';
+  border-radius: '5px';
+}
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
