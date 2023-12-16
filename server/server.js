@@ -39,9 +39,10 @@ app.post("/upload", async (req, res) => {
       await uploadedFile.mv(uploadPath);
       console.log("Upload complete.")
       res.json({
+        name: uploadedFile.name,
+        size: uploadedFile.size,
         url: generateUrl(uploadedFile),
-        filename: uploadedFile.name,
-      });
+    });
     } 
     catch (err) {
       res.status(500).send(err.message);

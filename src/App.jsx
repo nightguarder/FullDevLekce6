@@ -6,43 +6,37 @@ import './App.css';
 function App() {
   //variable States
 
-  const [file,setFile] = useState(false)
+  const [upload,setUpload] = useState(false)
   const [imageUrl, setImageUrl] = useState(null);
 
-  const handleFileChange = (e) => {
-    if(e.target.files){
-    setFile(e.target.files[0]);
-    }
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setUpload(file);
   };
 
-  const handleUpload = async ()=>{
+  const handleUpload = async () => {
     try {
-      
-        const formData = new FormData();
-        //append file data 
-        formData.forEach((file, i) => {
-          data.append(`file-${i}`, file, file.name);
-        });
-        //fetch with temporary headers
-        //fetch the file with the upload endpoint
-        const response = await fetch('http://localhost:3000/upload', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Content-type': 'multipart/form-data',
-          },
-        })
-        //If the upload is complete
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          setImageUrl(data.url);  
-        } else {
-          console.error('Error uploading data to the server.', response.statusText);
+      const formData = new FormData();
+      formData.append('myfile', upload);
+
+      const response = await fetch('http://localhost:3000/upload', {
+        method: 'POST',
+        body: formData,
+        headers:{
+          'Content-Type': formData.type,
+          'content-length': `${formData.size}`
         }
-      } catch (error) {
-        console.error('Something went wrong.', error.message);
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setImageUrl(data.url);
+      } else {
+        console.error('Error uploading file:', response.statusText);
       }
+    } catch (error) {
+      console.error('Something went wrong:', error.message);
+    }
   };
 
   return (
@@ -59,7 +53,7 @@ function App() {
       <div className='fileDiv'>
       <p>
         <input type="file" className="fileInput"  onChange={handleFileChange} />
-        { file && `${file.name} - ${file.type}`}
+        { upload && `${upload.name} - ${upload.type}`}
         </p>
       </div>
       <div className="card">
