@@ -12,8 +12,8 @@ function App() {
   //Handlers
 
   const handleFileChange = (event) => {
-    const upload = event.target.uploads[0];
-    setUpload(upload);
+    const file = event.target.files[0];
+    setUpload(file);
   };
 
   //On click Listeners

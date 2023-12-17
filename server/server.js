@@ -34,7 +34,6 @@ app.post('/upload', (req, res) => {
   if (!file.mimetype.startsWith('image/')) {
     return res.status(400).json({ error: 'Invalid file type. Please upload an image' });
   }
-
   // Express cesta do static souboru
   const staticPath = path.join(uploadPath,+ "/" + file.name);
   // Uložení souboru
@@ -42,7 +41,6 @@ app.post('/upload', (req, res) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-
     // Vrácení URL k nahrávanému souboru
     res.json({
       url: `/uploads/${file.name}`,
