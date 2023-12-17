@@ -13,7 +13,14 @@ const uploadPath = './public/images'
 const app = express()
 app.use(fileUpload())
 app.use(express.static('public'))
-app.use(cors)
+//Avoid corse issues
+//Only allow the fronendserver to join
+const corsOrigin = 'http://localhost:5173';
+app.use(cors({
+  origin:[corsOrigin],
+  methods:['GET','POST'],
+  credentials: true 
+})); 
 
 //Default endpoint
 app.get('/',(req,res) => {
@@ -22,11 +29,12 @@ app.get('/',(req,res) => {
 
 //nastaveni express static path
   // Express cesta do static souboru
-const imageUrl = (filename) => `http://${host}:${port}/uploads/${filename}`
+const imageUrl = (filename) => `http://${HOST}:${PORT}/uploads/${filename}`
 
 app.use('/uploads', express.static('public/images'));
 // Endpoint pro nahrávání souborů
 app.post('/upload',async (req, res) => {
+  console.log('POST request received to /upload.')
   const file = req.files.file
   // Kontrola if it starts with image
   if (!req.files || Object.keys(req.files).length === 0) {

@@ -17,14 +17,17 @@ function App() {
   };
   //On click Listeners
   //Form-Data
-  const handleUpload = async () => {
+  const handleUpload = async (event) => {
+
     const formData = new FormData();
     formData.append('file', file);
-    //Pouzit axios
-    const response = await axios.post('http://localhost:3000/upload', formData);
-    setUrl(response.data.url);
-    console.log(response.data.url);
-  };
+    console.log("Uploading...");
+    
+  //Pouzit axios
+  const response = await axios.post('http://localhost:3000/upload', formData);
+  setUrl(response.data.url);
+  console.log(response.data.url); 
+  }
 
   return (
     <>
@@ -40,7 +43,7 @@ function App() {
       <div className="card">
         <p>
           <code>Select your file:</code>
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" name='file'  onChange={handleFileChange} />
         <br></br>
         <code>Choose upload type:</code>
       <button onClick={handleUpload}>Upload</button>
