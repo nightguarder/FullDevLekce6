@@ -15,6 +15,7 @@ app.use(fileUpload())
 app.use(express.static('public'))
 //Avoid corse issues
 //Only allow the fronendserver to join
+//*The React frontend should match this url */
 const corsOrigin = 'http://localhost:5173';
 app.use(cors({
   origin:[corsOrigin],
@@ -48,7 +49,7 @@ app.post('/upload',async (req, res) => {
   //formData.append('file', upload);
   try {
     await file.mv(uploadPath + "/" + file.name)
-    res.sendStatus(200).send('Uplaod Complete')
+    console.log("Upload complete.")
     res.json({
       name: file.name,
       size: file.size,

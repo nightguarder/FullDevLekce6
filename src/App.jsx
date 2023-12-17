@@ -24,10 +24,20 @@ function App() {
     console.log("Uploading...");
     
   //Pouzit axios
-  const response = await axios.post('http://localhost:3000/upload', formData);
-  setUrl(response.data.url);
-  console.log(response.data.url); 
+  try {
+    const response = await axios.post('http://localhost:3000/upload', formData);
+  if (response.status == 200) {
+    const uploadedUrl = response.data.url;
+    setUrl(uploadedUrl);
+    console.log("Upload complete!")
+  } else {
+    console.error("Error when reaching the server.",response.statusText)
   }
+  } catch (error) {
+    console.error("Something went wrong.", error.message);
+  }
+   
+  };
 
   return (
     <>
@@ -49,13 +59,14 @@ function App() {
       <button onClick={handleUpload}>Upload</button>
         </p>
       </div>
-      <div className='result'>
+      <div className='resultDiv'>
+        <code>Uploaded file link: </code>
         <p>
         {uploadUrl && (
-        <a href={uploadUrl} target="_blank" rel="noopener noreferrer">
-          {uploadUrl}
-        </a>
-      )}
+          <a href={uploadUrl} target="_blank" rel="noopener noreferrer" className="uploadLink">
+            {uploadUrl}
+          </a>
+        )}
       </p>
       </div>
 
