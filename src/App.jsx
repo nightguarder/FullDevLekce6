@@ -1,7 +1,6 @@
 import { useState} from 'react';
 import reactLogo from './assets/react.svg';
 import expressLogo from '/express-js.svg';
-import axios from 'axios'
 import './App.css';
 
 function App() {
@@ -15,23 +14,6 @@ function App() {
     setUpload(file);
   };
 
-  const handleUpload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('myfile', upload);
-
-      const response = await axios.post('http://localhost:3000/upload', formData, {
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      setImageUrl(response.data.imageUrl);
-    } catch (error) {
-      console.error('Something went wrong:', error.message);
-    }
-  };
 
   return (
     <>
@@ -44,12 +26,6 @@ function App() {
         </a>
       </div>
       <h1>Image upload with Form Data</h1>
-      <div className='fileDiv'>
-      <p>
-        <input type="file" className="fileInput" enctype="multipart/form-data"  onChange={handleFileChange} />
-        { upload && `${upload.name} - ${upload.type}`}
-        </p>
-      </div>
       <div className="card">
         <p>
           <button onClick={handleUpload}>Upload</button>
