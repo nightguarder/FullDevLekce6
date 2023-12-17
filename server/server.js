@@ -36,10 +36,11 @@ app.use('/uploads', express.static('public/images'));
 app.post('/upload',async (req, res) => {
   console.log('POST request received to /upload.')
   const file = req.files.file
-  // Kontrola if it starts with image
+  //Kontrola if request has a body...
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No files were uploaded.');
   }
+  // Kontrola if it starts with image
   else if (!file.mimetype.startsWith('image/')) {
     return res.status(400).json({ error: 'Please upload an image only' });
   }
