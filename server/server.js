@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import fileUpload from 'express-fileupload'
 import path from 'path'
+import cors from 'cors'
 
 //dotenv config
 const HOST = process.env.HOST || 'localhost'
@@ -13,6 +14,7 @@ const app = express()
 app.use(fileUpload())
 app.use(express.json())
 app.use(express.static('public'))
+app.use(cors)
 
 //Default endpoint
 app.get('/',(req,res) => {
@@ -20,8 +22,9 @@ app.get('/',(req,res) => {
 })
 
 //nastaveni express static path
-app.use('/uploads', express.static(path.join(__dirname, '../app/public')));
+const uploadPath = './public/images'
 
+app.use('/uploads', express.static('public/images'));
 // Endpoint pro nahrávání souborů
 app.post('/upload', (req, res) => {
   // Získání souboru z požadavku
@@ -33,9 +36,9 @@ app.post('/upload', (req, res) => {
   }
 
   // Express cesta do static souboru
-  const uploadPath = path.join(__dirname, '../app/public', file.name);
+  const staticPath = path.join(uploadPath,+ "/" + file.name);
   // Uložení souboru
-  file.mv(uploadPath, (err) => {
+  file.mv(staticPath, (err) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
