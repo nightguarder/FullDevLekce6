@@ -1,18 +1,17 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import fileUpload from 'express-fileupload'
-import path from 'path'
 import cors from 'cors'
 
 //dotenv config
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || "3000"
 dotenv.config();
+const uploadPath = './public/images'
 
 //Express config
 const app = express()
 app.use(fileUpload())
-app.use(express.json())
 app.use(express.static('public'))
 app.use(cors)
 
@@ -22,31 +21,35 @@ app.get('/',(req,res) => {
 })
 
 //nastaveni express static path
-const uploadPath = './public/images'
+  // Express cesta do static souboru
+const imageUrl = (filename) => `http://${host}:${port}/uploads/${filename}`
 
 app.use('/uploads', express.static('public/images'));
 // Endpoint pro nahrávání souborů
-app.post('/upload', (req, res) => {
-  // Získání souboru z požadavku
-  const file = req.files.myfile;
-
+app.post('/upload',async (req, res) => {
+  const file = req.files.file
   // Kontrola if it starts with image
-  if (!file.mimetype.startsWith('image/')) {
-    return res.status(400).json({ error: 'Invalid file type. Please upload an image' });
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
   }
-  // Express cesta do static souboru
-  const staticPath = path.join(uploadPath,+ "/" + file.name);
-  // Uložení souboru
-  file.mv(staticPath, (err) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    // Vrácení URL k nahrávanému souboru
+  else if (!file.mimetype.startsWith('image/')) {
+    return res.status(400).json({ error: 'Please upload an image only' });
+  }
+  //Bacha na jmeno!
+  //formData.append('file', upload);
+  try {
+    await file.mv(uploadPath + "/" + file.name)
+    res.sendStatus(200).send('Uplaod Complete')
     res.json({
-      url: `/uploads/${file.name}`,
-      filename: file.name,
-    });
-  });
+      name: file.name,
+      size: file.size,
+      url: imageUrl(file.name)
+  })
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  
+  
 });
 
 app.listen(PORT, HOST, () => {

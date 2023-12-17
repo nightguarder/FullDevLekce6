@@ -6,7 +6,7 @@ import './App.css';
 
 function App() {
   //variable States
-  const [upload, setUpload] = useState(null);
+  const [file, setUpload] = useState(null);
   const [uploadUrl,setUrl] = useState('');
 
   //Handlers
@@ -15,15 +15,12 @@ function App() {
     const file = event.target.files[0];
     setUpload(file);
   };
-
   //On click Listeners
-  //Base64
   //Form-Data
-  const handleUploadFormData = async () => {
+  const handleUpload = async () => {
     const formData = new FormData();
-    //Bacha na jmeno!
-    formData.append('file', upload);
-    //Pouzit axios misto fetch...
+    formData.append('file', file);
+    //Pouzit axios
     const response = await axios.post('http://localhost:3000/upload', formData);
     setUrl(response.data.url);
     console.log(response.data.url);
@@ -46,7 +43,7 @@ function App() {
         <input type="file" onChange={handleFileChange} />
         <br></br>
         <code>Choose upload type:</code>
-      <button onClick={handleUploadFormData}>FormData</button>
+      <button onClick={handleUpload}>Upload</button>
         </p>
       </div>
       <div className='result'>
