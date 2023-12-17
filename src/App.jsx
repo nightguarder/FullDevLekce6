@@ -5,15 +5,28 @@ import './App.css';
 
 function App() {
   //variable States
-
-  const [upload,setUpload] = useState(false)
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setUpload(file);
+  const [upload, setUpload] = useState(null);
+  const handleufileChange = (event) => {
+    const upload = event.target.uploads[0];
+    setUpload(upload);
   };
-
+  //Base 64
+  const handleUploadBase64 = async () => {
+    const reader = new FileReader();
+    reader.readAsDataURL(upload);
+    reader.onloadend = async () => {
+      const base64 = reader.result.split(',')[1];
+      const response = await axios.post('http://localhost:3000/upload-base64', { upload: base64 });
+      console.log(response.data.url);
+    };
+  };
+  //Form-Data
+  const handleUploadFormData = async () => {
+    const formData = new FormData();
+    formData.append('file', upload);
+    const response = await axios.post('http://localhost:3000/upload-form-data', formData);
+    console.log(response.data.url);
+  };
 
   return (
     <>
@@ -28,7 +41,12 @@ function App() {
       <h1>Image upload with Form Data</h1>
       <div className="card">
         <p>
-          <button onClick={handleUpload}>Upload</button>
+          <code>Select your file:</code>
+        <input type="file" onChange={handleFileChange} />
+        <br></br>
+        <code>Choose upload type:</code>
+      <button onClick={handleUploadBase64}>Base64</button>
+      <button onClick={handleUploadFormData}>FormData</button>
         </p>
       </div>
       <div className='result'>

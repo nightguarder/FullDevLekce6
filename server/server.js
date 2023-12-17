@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import express from 'express'
 import fileUpload from 'express-fileupload'
-
+import path from 'path'
 
 //dotenv config
 const HOST = process.env.HOST || 'localhost'
@@ -19,11 +19,17 @@ app.get('/',(req,res) => {
     res.send(' Nothing to see here: GET/')
 })
 
+app.post('/upload', (req, res) => {
+  // Získání souboru z požadavku
+  //the .file has to match formData.append('file', upload);
+  const file = req.files.file;
 
-//Handle upload
-app.use(fileUpload());
+  // Nastavení cesty pro uložení souboru
+  const uploadPath = path.join(__dirname, '../app/public', file.name);
+  // Uložení souboru
+  
 
-
+});
 
 app.listen(PORT, HOST, () => {
     console.log(`Server is running at http://${HOST}:${PORT}`);
