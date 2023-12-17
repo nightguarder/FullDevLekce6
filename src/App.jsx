@@ -7,25 +7,25 @@ import './App.css';
 function App() {
   //variable States
   const [upload, setUpload] = useState(null);
-  const handleufileChange = (event) => {
+  const [uploadUrl,setUrl] = useState('');
+
+  //Handlers
+
+  const handleFileChange = (event) => {
     const upload = event.target.uploads[0];
     setUpload(upload);
   };
-  //Base 64
-  const handleUploadBase64 = async () => {
-    const reader = new FileReader();
-    reader.readAsDataURL(upload);
-    reader.onloadend = async () => {
-      const base64 = reader.result.split(',')[1];
-      const response = await axios.post('http://localhost:3000/upload-base64', { upload: base64 });
-      console.log(response.data.url);
-    };
-  };
+
+  //On click Listeners
+  //Base64
   //Form-Data
   const handleUploadFormData = async () => {
     const formData = new FormData();
+    //Bacha na jmeno!
     formData.append('file', upload);
-    const response = await axios.post('http://localhost:3000/upload-form-data', formData);
+    //Pouzit axios misto fetch...
+    const response = await axios.post('http://localhost:3000/upload', formData);
+    setUrl(response.data.url);
     console.log(response.data.url);
   };
 
@@ -46,15 +46,14 @@ function App() {
         <input type="file" onChange={handleFileChange} />
         <br></br>
         <code>Choose upload type:</code>
-      <button onClick={handleUploadBase64}>Base64</button>
       <button onClick={handleUploadFormData}>FormData</button>
         </p>
       </div>
       <div className='result'>
         <p>
-        {imageUrl && (
-        <a href={imageUrl} target="_blank" rel="noopener noreferrer">
-          {imageUrl}
+        {uploadUrl && (
+        <a href={uploadUrl} target="_blank" rel="noopener noreferrer">
+          {uploadUrl}
         </a>
       )}
       </p>
