@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
 
+
 //dotenv config
 const HOST = process.env.HOST || 'localhost'
 const PORT = process.env.PORT || "3000"
@@ -27,27 +28,27 @@ const uploadPath = 'public/images'
 //Handle upload
 //NENI MOJE TVORBA
 //https://rostislavjadavan.com/posts/designing-file-upload-endpoint-in-rest-api
+app.use(fileUpload());
+
 app.post("/upload", async (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-  //The name has to match formData.append('myfile', upload);
-  let uploadedFile = req.files.myfile
-    //*Security risk* User can upload harmful data?  
-    await uploadedFile.mv(uploadPath + '/' + uploadedFile.name)
-    try {
-      await uploadedFile.mv(uploadPath);
-      console.log("Upload complete.")
+  let uploadedFile = req.files.myfile;
+
+  try {
+    
+    await uploadedFile.mv(uploadPath,(err)=>{
+      if(err){
+        return res.status(500).json({ error: err.message });
+      }
       res.json({
-        name: uploadedFile.name,
-        size: uploadedFile.size,
         url: generateUrl(uploadedFile),
+        filename: uploadedFile.name,
+      });
     });
-    } 
-    catch (err) {
-      res.status(500).send(err.message);
-    }
-  });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
   function generateUrl(uploadedFile) {
     // Generate the URL based on the uploaded image name
     return `http://localhost:${PORT}/uploads/images/${uploadedFile.name}`;

@@ -1,6 +1,7 @@
 import { useState} from 'react';
 import reactLogo from './assets/react.svg';
 import expressLogo from '/express-js.svg';
+import axios from 'axios'
 import './App.css';
 
 function App() {
@@ -19,21 +20,14 @@ function App() {
       const formData = new FormData();
       formData.append('myfile', upload);
 
-      const response = await fetch('http://localhost:3000/upload', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:3000/upload', formData, {
         body: formData,
-        headers:{
-          'Content-Type': formData.type,
-          'content-length': `${formData.size}`
-        }
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setImageUrl(data.url);
-      } else {
-        console.error('Error uploading file:', response.statusText);
-      }
+      setImageUrl(response.data.imageUrl);
     } catch (error) {
       console.error('Something went wrong:', error.message);
     }
@@ -52,7 +46,7 @@ function App() {
       <h1>Image upload with Form Data</h1>
       <div className='fileDiv'>
       <p>
-        <input type="file" className="fileInput"  onChange={handleFileChange} />
+        <input type="file" className="fileInput" enctype="multipart/form-data"  onChange={handleFileChange} />
         { upload && `${upload.name} - ${upload.type}`}
         </p>
       </div>
